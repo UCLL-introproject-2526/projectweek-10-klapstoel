@@ -1,4 +1,4 @@
-# level_manager.py
+
 import pygame
 import random
 import math
@@ -15,6 +15,9 @@ class LevelManager:
         
         self.cur_ceiling_y = 100
         self.cur_floor_y = HEIGHT - 100
+        
+        self.ship_timer = 0
+        self.exit_portal_spawned = False
 
     def reset(self, level_num):
         self.objects = []
@@ -25,16 +28,17 @@ class LevelManager:
         self.total_scroll_x = 0
         self.cur_ceiling_y = 100
         self.cur_floor_y = HEIGHT - 100
+    
+        self.ship_timer = 0
+        self.exit_portal_spawned = False
 
     def get_borders(self, mode):
         if mode == 'cube':
             return 100, HEIGHT - 100
         else:
-            # Dezelfde golf-wiskunde om de muren te tekenen
-            wave = math.sin(self.total_scroll_x * 0.015) * 100
+            wave = math.sin(self.total_scroll_x * 0.003) * 100
             center_y = (HEIGHT / 2) + wave
-            
-            breath = math.sin(self.total_scroll_x * 0.005) 
+            breath = math.sin(self.total_scroll_x * 0.002) 
             tunnel_height = 180 + (breath * 60) 
             
             ceil = center_y - (tunnel_height / 2)
@@ -45,10 +49,8 @@ class LevelManager:
             
             return ceil, flr
 
-    # --- NIEUWE FUNCTIE ---
     def get_safe_y(self):
-        """Berekent het exacte midden van de tunnel op dit moment"""
-        wave = math.sin(self.total_scroll_x * 0.015) * 100
+        wave = math.sin(self.total_scroll_x * 0.003) * 100
         return (HEIGHT / 2) + wave
 
     def update(self):
@@ -72,15 +74,28 @@ class LevelManager:
         if self.finish_spawned: return
         
         if mode == 'ship':
-            if self.score >= WIN_SCORE and not self.finish_spawned:
-                if not self.objects: 
-                    r = pygame.Rect(WIDTH, 0, 40, HEIGHT)
-                    self.objects.append({'rect': r, 'hitbox': r, 'type': 'finish_line', 'passed': False})
-                    self.finish_spawned = True
+            self.ship_timer += 1
             
             if self.total_scroll_x % 60 == 0 and self.score < WIN_SCORE:
                 self.score += 1
+            
+            if self.ship_timer >= 180 and not self.exit_portal_spawned:
+                if not self.objects: 
+                    r = pygame.Rect(WIDTH, 0, 50, 100)
+                    
+                    safe_y = self.get_safe_y()
+                    r.centery = safe_y
+                    
+                    self.objects.append({'rect': r, 'hitbox': r, 'type': 'fly_portal', 'passed': False})
+                    self.exit_portal_spawned = True
+            
             return 
+
+        
+        
+        if self.ship_timer > 0:
+            self.ship_timer = 0
+            self.exit_portal_spawned = False
 
         last_x = self.objects[-1]['rect'].x if self.objects else 0
         
@@ -95,7 +110,6 @@ class LevelManager:
         min_g, max_g = LEVEL_DATA[self.current_level_num]["gap"]
         actual_gap = random.randint(min_g, max_g)
         
-        if last_type == 'jumppad': actual_gap = 900 + (self.scroll_speed * 10)
         if last_type == 'fly_portal': actual_gap += 400
         if last_type == 'double_spike_part1': actual_gap = 40
 
@@ -103,18 +117,34 @@ class LevelManager:
             choices = ['spike', 'platform', 'double_spike']
             if self.current_level_num >= 2: choices = ['spike', 'double_spike', 'platform'] 
 
-            choices.extend(['jumppad', 'fly_portal'])
+            
+            choices.append('jumppad_combo') 
+            choices.append('fly_portal')
 
             if 'fly_portal' in choices and random.random() < 0.7: 
                 choices.remove('fly_portal')
 
             obj_type = random.choice(choices)
             
+            
             final_type = obj_type
             if obj_type == 'double_spike':
                 final_type = 'double_spike_part1'
                 obj_type = 'spike'
 
+            
+            if obj_type == 'jumppad_combo':
+                
+                r_pad = pygame.Rect(WIDTH, HEIGHT - 100 - 10, 40, 10)
+                self.objects.append({'rect': r_pad, 'hitbox': r_pad, 'type': 'jumppad', 'passed': False})
+                
+                
+                r_spike = pygame.Rect(WIDTH + 250, HEIGHT - 100 - 40, 40, 40)
+                hb_spike = pygame.Rect(WIDTH + 250 + 10, HEIGHT - 100 - 40 + 10, 20, 30)
+                self.objects.append({'rect': r_spike, 'hitbox': hb_spike, 'type': 'spike', 'passed': False})
+                return 
+
+           
             new_obj = None
             w, h = 40, 40
             floor_y = HEIGHT - 100
@@ -127,9 +157,6 @@ class LevelManager:
                 elev = random.choice([80, 130])
                 r = pygame.Rect(WIDTH, floor_y - elev, random.randint(100, 200), 20)
                 new_obj = {'rect': r, 'hitbox': r, 'type': obj_type, 'passed': False}
-            elif obj_type == 'jumppad':
-                r = pygame.Rect(WIDTH, floor_y - 10, 40, 10)
-                new_obj = {'rect': r, 'hitbox': r, 'type': obj_type, 'passed': False}
             elif obj_type == 'fly_portal':
                 r = pygame.Rect(WIDTH, HEIGHT/2 - 50, 50, 100)
                 new_obj = {'rect': r, 'hitbox': r, 'type': obj_type, 'passed': False}
@@ -141,6 +168,7 @@ class LevelManager:
         grid_size = 60
         bg_scroll = self.total_scroll_x * 0.5
         offset = int(bg_scroll % grid_size)
+        
         for x in range(-offset, WIDTH, grid_size):
             pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, HEIGHT), 1)
         for y in range(0, HEIGHT, grid_size):

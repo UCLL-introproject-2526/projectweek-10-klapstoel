@@ -1,16 +1,14 @@
-# player.py
+
 import pygame
 from settings import *
 
 class Player:
     def __init__(self):
-        self.size = 40
+        self.size = 30
         self.start_x = 100
-        # Standaard vloer/plafond
         self.floor_y = HEIGHT - 100
         self.ceiling_y = 100
         self.rect = pygame.Rect(self.start_x, self.floor_y - self.size, self.size, self.size)
-        
         self.y_velocity = 0
         self.is_jumping = False
         self.is_holding_space = False
@@ -58,7 +56,6 @@ class Player:
         else:
             self.mode = 'cube'
             self.is_holding_space = False
-            # Zet speler netjes op de grond bij terugwissel
             self.rect.y = HEIGHT - 100 - self.size
 
     def update(self):
@@ -66,7 +63,6 @@ class Player:
             self.y_velocity += self.gravity
             self.rect.y += self.y_velocity
             
-            # Cube gebruikt vaste vloer
             floor_limit = HEIGHT - 100
             if self.rect.bottom >= floor_limit:
                 self.rect.bottom = floor_limit
@@ -85,12 +81,7 @@ class Player:
             self.rect.y += self.y_velocity
 
     def check_death(self, current_ceiling, current_floor):
-        """
-        Checkt of de speler de bewegende muren raakt in ship mode.
-        We krijgen de huidige vloer/plafond posities door vanuit LevelManager.
-        """
         if self.mode == 'ship':
-            # +5 pixels marge zodat het eerlijk voelt
             if self.rect.top <= current_ceiling + 5 or self.rect.bottom >= current_floor - 5:
                 return True
         return False

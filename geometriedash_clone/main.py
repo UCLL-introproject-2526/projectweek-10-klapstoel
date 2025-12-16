@@ -1,6 +1,7 @@
-# main.py
+
 import pygame
 import sys
+import os 
 from settings import *
 from sound_manager import SoundManager
 from player import Player
@@ -10,9 +11,21 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption("Geometry Dash - Safe Portal Fix")
+        pygame.display.set_caption("Geometry Dash - Xmas Special")
         self.clock = pygame.time.Clock()
         
+        self.bg_image = None
+        try:
+            if os.path.exists("achtergrond.png"):
+                img = pygame.image.load("achtergrond.png")
+                self.bg_image = pygame.transform.scale(img, (WIDTH, HEIGHT))
+                print("SUCCES: Achtergrond afbeelding geladen!")
+            else:
+                print("FOUT: Bestand 'achtergrond.png' niet gevonden in deze map.")
+                print("Huidige map is:", os.getcwd())
+        except Exception as e:
+            print(f"FOUT bij laden afbeelding: {e}")
+
         self.sound_manager = SoundManager()
         self.player = Player()
         self.level_manager = LevelManager()
@@ -78,18 +91,10 @@ class Game:
                 elif t == 'fly_portal':
                     self.player.toggle_mode()
                     
-                    # --- DE FIX IS HIER ---
                     if self.player.mode == 'ship':
-                        # 1. Verwijder obstakels zodat je nergens tegenaan knalt
                         self.level_manager.objects.clear()
-                        
-                        # 2. Vraag aan LevelManager: Waar is het veilige midden NU?
                         safe_y = self.level_manager.get_safe_y()
-                        
-                        # 3. Zet de speler precies daar neer
                         self.player.rect.centery = safe_y
-                        
-                        # 4. Stop verticale snelheid voor een stabiele start
                         self.player.y_velocity = 0
                     
                     if obj in self.level_manager.objects:
@@ -110,7 +115,6 @@ class Game:
         if self.state == "PLAYING":
             self.player.update()
             
-            # Check tunnel dood
             ceil, flr = self.level_manager.get_borders(self.player.mode)
             if self.player.check_death(ceil, flr):
                 self.state = "GAMEOVER"
@@ -122,17 +126,24 @@ class Game:
 
     def draw(self):
         if self.state == "MENU":
-            self.level_manager.draw_background(self.screen, 'cube')
+
+            if self.bg_image:
+
+                self.screen.blit(self.bg_image, (0, 0))
+            else:
+
+                self.level_manager.draw_background(self.screen, 'cube')
+
             title = self.fonts['title'].render("GEOMETRY DASH CLONE", True, BLUE)
-            self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 100))
+            self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 150))
             
             t1 = self.fonts['menu'].render("[1] Level 1 - Easy", True, GREEN)
             t2 = self.fonts['menu'].render("[2] Level 2 - HARDCORE", True, YELLOW)
             t3 = self.fonts['menu'].render("[3] Level 3 - IMPOSSIBLE", True, RED)
             
-            self.screen.blit(t1, (WIDTH//2 - t1.get_width()//2, 280))
-            self.screen.blit(t2, (WIDTH//2 - t2.get_width()//2, 340))
-            self.screen.blit(t3, (WIDTH//2 - t3.get_width()//2, 400))
+            self.screen.blit(t1, (WIDTH//2 - t1.get_width()//2, 300))
+            self.screen.blit(t2, (WIDTH//2 - t2.get_width()//2, 360))
+            self.screen.blit(t3, (WIDTH//2 - t3.get_width()//2, 420))
 
         elif self.state == "PLAYING" or self.state == "GAMEOVER" or self.state == "VICTORY":
             self.level_manager.draw_background(self.screen, self.player.mode)
@@ -158,9 +169,13 @@ class Game:
     def run(self):
         running = True
         while running:
-            running = self.handle_input()
-            self.update()
-            self.draw()
+            try:
+                running = self.handle_input()
+                self.update()
+                self.draw()
+            except Exception as e:
+                print(f"CRASH PANNENKOEK: {e}")
+                self.state = "GAMEOVER"
             self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
