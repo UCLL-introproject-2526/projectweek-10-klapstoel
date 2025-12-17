@@ -18,8 +18,7 @@ class Player:
         self.gravity = 0.8
         self.jump_force = -16
         self.boost_force = -25
-        
-        # AANGEPAST: Standaardwaarden voor Ship (worden in reset overschreven)
+
         self.ship_gravity = 0.25
         self.ship_lift = 0.4
         self.ship_max_speed = 4
@@ -37,14 +36,11 @@ class Player:
         self.jump_force = -16 * gravity_mod
         self.boost_force = -25
         
-        # --- AANGEPAST: VEEL TRAGERE SHIP FYSICA ---
-        # Vroeger was dit 0.6 en 1.0. Nu veel lager voor meer controle.
         self.ship_gravity = 0.25 * gravity_mod
         self.ship_lift = 0.4 * gravity_mod
-        self.ship_max_speed = 5 + level_num  # Max snelheid ook omlaag
+        self.ship_max_speed = 5 + level_num 
 
     def jump(self):
-        # Alleen springen als we niet al aan het springen zijn
         if self.mode == 'cube' and not self.is_jumping:
             self.y_velocity = self.jump_force
             self.is_jumping = True
@@ -66,12 +62,9 @@ class Player:
             self.rect.y = HEIGHT - 100 - self.size
 
     def update(self):
-        # Input checken (voor auto-jump en ship control)
         keys = pygame.key.get_pressed()
         
         if self.mode == 'cube':
-            # --- NIEUW: AUTO-JUMP ---
-            # Als spatie is ingedrukt EN we staan op de grond (niet springen), spring dan!
             if keys[pygame.K_SPACE] and not self.is_jumping:
                 self.jump()
 
@@ -85,15 +78,13 @@ class Player:
                 self.is_jumping = False
                 
         elif self.mode == 'ship':
-            # Update holding status voor main loop logica
             self.is_holding_space = keys[pygame.K_SPACE]
             
             if self.is_holding_space:
                 self.y_velocity -= self.ship_lift
             else:
                 self.y_velocity += self.ship_gravity
-            
-            # Snelheid begrenzen (zodat je niet te hard gaat)
+
             if self.y_velocity > self.ship_max_speed: self.y_velocity = self.ship_max_speed
             if self.y_velocity < -self.ship_max_speed: self.y_velocity = -self.ship_max_speed
             
