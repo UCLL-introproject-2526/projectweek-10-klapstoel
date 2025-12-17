@@ -158,43 +158,43 @@ class Game:
             self.check_collisions()
 
     def draw(self):
+    
         if self.state == "MENU":
-
+            
             if self.bg_image:
-
                 self.screen.blit(self.bg_image, (0, 0))
             else:
-
                 self.level_manager.draw_background(self.screen, 'cube')
 
             title = self.fonts['title'].render("GEOMETRY DASH CLONE", True, BLUE)
             self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 150))
             
-            t1 = self.fonts['menu'].render("[1] Level 1 - Easy", True, GREEN)
-            t2 = self.fonts['menu'].render("[2] Level 2 - HARDCORE", True, YELLOW)
-            t3 = self.fonts['menu'].render("[3] Level 3 - IMPOSSIBLE", True, RED)
+            levels = [
+                ("[1] Level 1 - Easy", GREEN, 300),
+                ("[2] Level 2 - HARDCORE", YELLOW, 360),
+                ("[3] Level 3 - IMPOSSIBLE", RED, 420)
+            ]
             
-            self.screen.blit(t1, (WIDTH//2 - t1.get_width()//2, 300))
-            self.screen.blit(t2, (WIDTH//2 - t2.get_width()//2, 360))
-            self.screen.blit(t3, (WIDTH//2 - t3.get_width()//2, 420))
+            for text, color, y in levels:
+                label = self.fonts['menu'].render(text, True, color)
+                self.screen.blit(label, (WIDTH//2 - label.get_width()//2, y))
 
-        elif self.state == "PLAYING" or self.state == "GAMEOVER" or self.state == "VICTORY":
+        else:
             self.level_manager.draw_background(self.screen, self.player.mode)
-            
             self.player.draw(self.screen)
             self.level_manager.draw_objects(self.screen)
             self.level_manager.draw_ui(self.screen, self.fonts)
             
             if self.state == "GAMEOVER":
-                txt = self.fonts['title'].render("GAME OVER", True, RED)
-                self.screen.blit(txt, (WIDTH//2 - txt.get_width()//2, HEIGHT//2 - 50))
-                instr = self.fonts['ui'].render("[R] Restart  |  [M] Menu", True, WHITE)
-                self.screen.blit(instr, (WIDTH//2 - instr.get_width()//2, HEIGHT//2 + 50))
-                
+                message = ("GAME OVER", RED, "[R] Restart  |  [M] Menu", WHITE)
             elif self.state == "VICTORY":
-                txt = self.fonts['title'].render("LEVEL COMPLETE!", True, GREEN)
+                message = ("LEVEL COMPLETE!", GREEN, "[R] Play Again  |  [M] Menu", BLUE)
+            
+            if self.state in ["GAMEOVER", "VICTORY"]:
+                txt = self.fonts['title'].render(message[0], True, message[1])
                 self.screen.blit(txt, (WIDTH//2 - txt.get_width()//2, HEIGHT//2 - 50))
-                instr = self.fonts['ui'].render("[R] Play Again  |  [M] Menu", True, BLUE)
+                
+                instr = self.fonts['ui'].render(message[2], True, message[3])
                 self.screen.blit(instr, (WIDTH//2 - instr.get_width()//2, HEIGHT//2 + 50))
 
         pygame.display.flip()
