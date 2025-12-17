@@ -8,17 +8,31 @@ from player import Player
 from level_manager import LevelManager
 
 class Game:
+    import pygame
+import os
+from settings import *
+from sound_manager import SoundManager
+from player import Player
+from level_manager import LevelManager
+
+class Game:
     def __init__(self):
+        # Start Pygame
         pygame.init()
+        
+        # Maak het scherm aan
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Geometry Dash - Xmas Special")
+        
+        # Clock om FPS te regelen
         self.clock = pygame.time.Clock()
         
+        # Achtergrond afbeelding laden
         self.bg_image = None
         try:
-            if os.path.exists("achtergrond.png"):
-                img = pygame.image.load("achtergrond.png")
-                self.bg_image = pygame.transform.scale(img, (WIDTH, HEIGHT))
+            if os.path.exists("achtergrond.png"):           # Check of bestand bestaat
+                img = pygame.image.load("achtergrond.png")  # Laad afbeelding
+                self.bg_image = pygame.transform.scale(img, (WIDTH, HEIGHT))  # Schaal naar scherm
                 print("SUCCES: Achtergrond afbeelding geladen!")
             else:
                 print("FOUT: Bestand 'achtergrond.png' niet gevonden in deze map.")
@@ -26,55 +40,70 @@ class Game:
         except Exception as e:
             print(f"FOUT bij laden afbeelding: {e}")
 
-        self.sound_manager = SoundManager()
-        self.player = Player()
-        self.level_manager = LevelManager()
-        
+        # Game-objecten
+        self.sound_manager = SoundManager()  # Geluiden
+        self.player = Player()                # Speler
+        self.level_manager = LevelManager()   # Levels
+
+        # Fonts voor tekst in menu, UI, etc.
         self.fonts = {
             'title': pygame.font.SysFont('Arial', 50, bold=True),
             'menu': pygame.font.SysFont('Arial', 36),
             'ui': pygame.font.SysFont('Arial', 24)
         }
-        
-        self.state = "MENU"
-        self.current_level = 1
+
+        # Spelstatus en huidig level
+        self.state = "MENU"       # Kan zijn: MENU, PLAYING, GAMEOVER, VICTORY
+        self.current_level = 1    # Startlevel
 
     def start_level(self, level_num):
+        """Start een nieuw level"""
         self.current_level = level_num
-        self.level_manager.reset(level_num)
-        self.player.reset(LEVEL_DATA[level_num]["grav_mod"], level_num)
-        self.state = "PLAYING"
+        self.level_manager.reset(level_num)  # Reset level-data
+        self.player.reset(LEVEL_DATA[level_num]["grav_mod"], level_num)  # Reset speler
+        self.state = "PLAYING"  # Zet status naar spelen
 
     def handle_input(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        """Verwerk alle toetsen en venster-events"""
+        for event in pygame.event.get():  # Haal alle events op
+            if event.type == pygame.QUIT:  # Sluitknop van venster
                 return False
             
+            # Als een toets ingedrukt wordt
             if event.type == pygame.KEYDOWN:
                 if self.state == "MENU":
+                    # Start een level met 1,2 of 3
                     if event.key == pygame.K_1: self.start_level(1)
                     if event.key == pygame.K_2: self.start_level(2)
                     if event.key == pygame.K_3: self.start_level(3)
                 
                 elif self.state == "PLAYING":
+                    # Space doet springen of ship-acties
                     if event.key == pygame.K_SPACE:
-                        if self.player.mode == 'cube': self.player.jump()
-                        elif self.player.mode == 'ship': self.player.is_holding_space = True
+                        if self.player.mode == 'cube': 
+                            self.player.jump()
+                        elif self.player.mode == 'ship': 
+                            self.player.is_holding_space = True
                 
                 elif self.state in ["GAMEOVER", "VICTORY"]:
+                    # Herstart of terug naar menu
                     if event.key == pygame.K_r: self.start_level(self.current_level)
                     if event.key == pygame.K_m: self.state = "MENU"
             
+            # Als een toets losgelaten wordt
             if event.type == pygame.KEYUP:
                 if self.state == "PLAYING" and event.key == pygame.K_SPACE:
                     self.player.is_holding_space = False
-        return True
+        
+        return True  # Blijf loop draaien
 
     def check_collisions(self):
-        player_rect = self.player.rect
+        """Check of de speler botst met objecten"""
+        player_rect = self.player.rect  # Hitbox van speler
+        
         for obj in self.level_manager.objects:
-            if player_rect.colliderect(obj['hitbox']):
-                t = obj['type']
+            if player_rect.colliderect(obj['hitbox']):  # Botsing?
+                t = obj['type']  # Welk type object
                 
                 if t == 'finish_line':
                     self.state = "VICTORY"
@@ -89,19 +118,22 @@ class Game:
                     self.sound_manager.play_jump()
                 
                 elif t == 'fly_portal':
+                    # Wissel mode van speler
                     self.player.toggle_mode()
                     
                     if self.player.mode == 'ship':
-                        self.level_manager.objects.clear()
-                        safe_y = self.level_manager.get_safe_y()
-                        self.player.rect.centery = safe_y
-                        self.player.y_velocity = 0
+                        # FIX: veilige start bij ship
+                        self.level_manager.objects.clear()            # Verwijder obstakels
+                        safe_y = self.level_manager.get_safe_y()     # Vraag veilig midden
+                        self.player.rect.centery = safe_y           # Zet speler daar
+                        self.player.y_velocity = 0                   # Stop verticale snelheid
                     
                     if obj in self.level_manager.objects:
-                         self.level_manager.objects.remove(obj)
+                        self.level_manager.objects.remove(obj)
                     return
                 
                 elif t == 'platform':
+                    # Platform logica voor cube
                     if self.player.mode == 'cube':
                         if self.player.y_velocity >= 0 and player_rect.bottom < obj['rect'].top + 30:
                             self.player.rect.y = obj['rect'].top - self.player.size
@@ -110,6 +142,7 @@ class Game:
                         elif player_rect.top > obj['rect'].top:
                             self.state = "GAMEOVER"
                             self.sound_manager.play_crash()
+
 
     def update(self):
         if self.state == "PLAYING":
