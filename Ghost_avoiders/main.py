@@ -6,7 +6,6 @@ from settings import *
 from utils import * 
 from game_objects import Speler, Spook 
 from pathlib import Path
-
 # Initialisatie
 pygame.init()
 scherm = pygame.display.set_mode((BREEDTE, HOOGTE))
@@ -20,20 +19,29 @@ font_groot = pygame.font.Font(None, 72)
 # Basis map = map waarin dit .py bestand staat
 BASE_DIR = Path(__file__).resolve().parent
 
-# Pad naar afbeelding
+
+# Pad naar afbeelding (relatief!)
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 
+<<<<<<< HEAD
 # Achtergrond laden
 <<<<<<< HEAD:Ghost avoiders/main.py
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
 =======
+=======
+# Pad naar afbeelding
+IMAGE_PATH = BASE_DIR / "images" / "background.png"
+>>>>>>> 76c08ad1023f4b842632ff0319dd6fed69bea1b3
 achtergrond = laad_afbeelding(
     IMAGE_PATH,
     BREEDTE,
     HOOGTE,
     ZWART
 )
+<<<<<<< HEAD
 >>>>>>> 021aa063f951f04a692e29c1fb45054a9d43b34f:Ghost_avoiders/main.py
+=======
+>>>>>>> 76c08ad1023f4b842632ff0319dd6fed69bea1b3
 
 def start_scherm(highscore):
     intro = True
