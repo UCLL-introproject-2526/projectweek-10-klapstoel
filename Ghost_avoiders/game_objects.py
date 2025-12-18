@@ -36,10 +36,9 @@ class Spook(pygame.sprite.Sprite):
             "/Users/arnedeboudt/Desktop/UCLL/introduction project/projectweek/projectweek-10-klapstoel/projectweek-10-klapstoel/space invaders/images/enemy3-removebg-preview.png"
         ]
         
-        gekozen_bestand = random.choice(mogelijke_bestanden)
+        gekozen_bestand = random.choice(mogelijke_plaatjes)
         
         # Plak het pad aan elkaar
-        FULL_PATH = IMAGE_DIR / gekozen_bestand
 
         self.image = laad_afbeelding(str(FULL_PATH), 50, 50, ROOD)
 
