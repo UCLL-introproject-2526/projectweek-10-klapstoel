@@ -49,8 +49,10 @@ class Spook(pygame.sprite.Sprite):
         gekozen_bestand = random.choice( mogelijke_bestanden)
         FULL_PATH = IMAGE_DIR / gekozen_bestand
         # Plak het pad aan elkaar
-
+        FULL_PATH = IMAGE_DIR / gekozen_bestand
+        # Plak het pad aan elkaar
         self.image = laad_afbeelding(str(FULL_PATH), 50, 50, ROOD)
+
 
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, BREEDTE - 50) 
