@@ -1,0 +1,20 @@
+# settings.py
+
+# Scherm
+BREEDTE = 800
+HOOGTE = 600
+FPS = 60
+
+# Kleuren
+WIT = (255, 255, 255)
+ZWART = (0, 0, 0)
+ROOD = (255, 0, 0)
+BLAUW = (0, 100, 255)
+GROEN = (0, 255, 0)
+GRIJS = (200, 200, 200)
+GEEL = (255, 215, 0)
+
+# Spelinstellingen
+SPELER_SNELHEID = 7
+BASIS_SPOOK_SNELHEID = 3
+SPOOK_INTERVAL = 60
