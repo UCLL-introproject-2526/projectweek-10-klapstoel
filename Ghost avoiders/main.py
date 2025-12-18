@@ -17,7 +17,7 @@ font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
 # Achtergrond laden
-achtergrond = laad_afbeelding("/Users/arnedeboudt/Desktop/UCLL/introduction project/projectweek/projectweek-10-klapstoel/projectweek-10-klapstoel/space invaders/images/background.png", BREEDTE, HOOGTE, ZWART)
+achtergrond = laad_afbeelding("Ghost avoiders/images/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
 
 def start_scherm(highscore):
     intro = True
