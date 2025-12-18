@@ -1,4 +1,4 @@
-# main.py
+
 import pygame
 import sys
 import random
@@ -7,28 +7,27 @@ from utils import *
 from game_objects import Speler, Spook 
 from pathlib import Path
 
-# Initialisatie
+
 pygame.init()
 scherm = pygame.display.set_mode((BREEDTE, HOOGTE))
 pygame.display.set_caption("Ghost Avoider")
 klok = pygame.time.Clock()
 
-# Fonts
+
 font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
-# Basis map = map waarin py  staat
+
 BASE_DIR = Path(__file__).resolve().parent
 
 
-# Pad naar afbeelding (relatief)
+
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 
 
-# Achtergrond laden
+
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
-=======
-# Pad naar afbeelding
+
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 achtergrond = laad_afbeelding(
     IMAGE_PATH,
@@ -73,23 +72,23 @@ def game_over_scherm(score, highscore):
                 pygame.quit(); sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    return # Terug naar de main loop
+                    return 
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit(); sys.exit()
 
 def main():
     highscore = laad_highscore()
     
-    while True: # Grote loop voor herstarten spel
+    while True: 
         start_scherm(highscore)
         
         
         speler = Speler()
-        # groep om meerdere spoken aan te spreken anders moeten wij dit zelf doen
+        
         alle_sprites = pygame.sprite.Group() 
         alle_sprites.add(speler)
         
-        spoken_groep = pygame.sprite.Group() # Groep voor botsingen
+        spoken_groep = pygame.sprite.Group()
         
         score = 0
         huidige_spook_snelheid = BASIS_SPOOK_SNELHEID
@@ -98,13 +97,13 @@ def main():
         
         while spel_actief:
             klok.tick(FPS)
-            
-            # 1. Events
+
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit(); sys.exit()
-            
-            # 2. Update Logica
+
+
             spook_timer += 1
             if spook_timer >= max(20, SPOOK_INTERVAL - (score // 2)):
                 spook = Spook(BASIS_SPOOK_SNELHEID)
@@ -112,32 +111,33 @@ def main():
                 alle_sprites.add(spook)
                 spook_timer = 0
             
-            alle_sprites.update() # Beweegt speler xén alle spoken automatisch!
+            alle_sprites.update()
             
-            # Score checken (spoken die het scherm uit zijn)
-            for spook in spoken_groep:
-                if spook.rect.top > HOOGTE: 
+            for Spook in spoken_groep:
+                if Spook.rect.top > HOOGTE: 
                     score += 1
-                    spook.kill() # Verwijder spook uit geheugen
+                    Spook.kill() 
+ 
                     
-                    # Snelheid verhogen
+                    
+   
                     if score % 10 == 0:
                         huidige_spook_snelheid += 0.5
 
-            # Botsingen
+        
             if pygame.sprite.spritecollide(speler, spoken_groep, False):
-                spel_actief = False # Dood
+                spel_actief = False 
             
-            # 3. Tekenen
+  
             scherm.blit(achtergrond, (0, 0))
-            alle_sprites.draw(scherm) # Tekent alles in 1 keer!
+            alle_sprites.draw(scherm) 
             
             teken_tekst(scherm, f"Score: {score}", 10, 10, font_klein)
             teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE-200, 10, font_klein, GEEL)
             
             pygame.display.flip()
             
-        # --- EINDE SPEL ---
+     
         if score > highscore:
             highscore = score
             sla_highscore_op(highscore)
