@@ -6,6 +6,10 @@ from pathlib import Path
 from settings import *
 from utils import * 
 from game_objects import Speler, Spook
+from pathlib import Path
+
+# Initialisatie
+from game_objects import Speler, Spook
 
 def main():
     speler = Speler()
@@ -24,6 +28,7 @@ font_groot = pygame.font.Font(None, 72)
 
 
 BASE_DIR = Path(__file__).resolve().parent
+
 
 
 

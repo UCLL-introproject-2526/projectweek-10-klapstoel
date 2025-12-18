@@ -2,19 +2,26 @@
 import pygame
 import os
 
-def laad_afbeelding(bestandsnaam, breedte, hoogte, vervangende_kleur):
-    """Probeert een afbeelding uit de map 'img' te laden."""
-    pad = os.path.join('images', bestandsnaam)
+def laad_afbeelding(naam, breedte, hoogte, kleur):
+    """Probeert een plaatje te laden. Lukt dat niet? Dan krijg je een gekleurd blokje."""
+    
+    # De computer plakt de map 'images' en de naam aan elkaar.
+    pad = os.path.join('images', naam)
     try:
-        afbeelding = pygame.image.load(pad).convert_alpha()
-        afbeelding = pygame.transform.scale(afbeelding, (breedte, hoogte))
-        return afbeelding
-    except (FileNotFoundError, pygame.error):
-        print(f"LET OP: Kan {bestandsnaam} niet vinden. Er wordt een blokje gebruikt.")
-        afbeelding = pygame.Surface((breedte, hoogte))
-        afbeelding.fill(vervangende_kleur)
-        return afbeelding
+        # .convert_alpha() zorgt dat doorzichtige delen ook echt doorzichtig zijn
+        plaatje = pygame.image.load(pad).convert_alpha()
+        
+        #  Juiste grootte
+        plaatje = pygame.transform.scale(plaatje, (breedte, hoogte))
+        return plaatje
 
+    except:
+        print(f"PAS OP: Ik kan '{naam}' niet vinden! Je ziet nu een blokje.")
+        
+        # Maak een nep-plaatje (een gekleurd blokje) zodat het spel niet crasht
+        blokje = pygame.Surface((breedte, hoogte))
+        blokje.fill(kleur)
+        return blokje
 def laad_highscore():
     if os.path.exists("highscore.txt"):
         try:
