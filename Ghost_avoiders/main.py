@@ -5,6 +5,7 @@ import random
 from settings import *
 from utils import * 
 from game_objects import Speler, Spook 
+from pathlib import Path
 
 # Initialisatie
 pygame.init()
@@ -16,8 +17,23 @@ klok = pygame.time.Clock()
 font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
+# Basis map = map waarin dit .py bestand staat
+BASE_DIR = Path(__file__).resolve().parent
+
+# Pad naar afbeelding
+IMAGE_PATH = BASE_DIR / "images" / "background.png"
+
 # Achtergrond laden
+<<<<<<< HEAD:Ghost avoiders/main.py
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
+=======
+achtergrond = laad_afbeelding(
+    IMAGE_PATH,
+    BREEDTE,
+    HOOGTE,
+    ZWART
+)
+>>>>>>> 021aa063f951f04a692e29c1fb45054a9d43b34f:Ghost_avoiders/main.py
 
 def start_scherm(highscore):
     intro = True

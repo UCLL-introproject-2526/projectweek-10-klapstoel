@@ -4,7 +4,7 @@ import os
 
 def laad_afbeelding(bestandsnaam, breedte, hoogte, vervangende_kleur):
     """Probeert een afbeelding uit de map 'img' te laden."""
-    pad = os.path.join('img', bestandsnaam)
+    pad = os.path.join('images', bestandsnaam)
     try:
         afbeelding = pygame.image.load(pad).convert_alpha()
         afbeelding = pygame.transform.scale(afbeelding, (breedte, hoogte))
