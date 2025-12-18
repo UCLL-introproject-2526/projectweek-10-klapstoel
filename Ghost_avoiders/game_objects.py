@@ -1,6 +1,6 @@
 import pygame
 import random
-from pathlib import Path  # <--- BELANGRIJK: Vergeet deze import niet!
+from pathlib import Path  
 from settings import *
 from utils import laad_afbeelding 
 
@@ -8,11 +8,19 @@ from utils import laad_afbeelding
 class Speler(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
-
-        self.image = laad_afbeelding("Ghost avoiders/images/spaceship copy.png", 50, 50, (0, 0, 255))
-
         
-        # Stap 2: Waar sta ik?
+        # 1. Bepaal de map waar DIT bestand (game_objects.py) staat
+        BASE_DIR = Path(__file__).resolve().parent
+        
+        # 2. Bouw het pad naar het plaatje
+        # Let op: Zorg dat de mapnaam 'images' of 'img' klopt met jouw mappen!
+        SPACESHIP_PATH = BASE_DIR / "images" / "spaceship copy.png"
+        
+        # 3. Laden
+        # We zetten het pad om naar een string met str() voor de zekerheid
+        self.image = laad_afbeelding(str(SPACESHIP_PATH), 60, 60, BLAUW)
+        
+        # 4. Hitbox maken
         self.rect = self.image.get_rect()
         self.rect.center = (BREEDTE // 2, HOOGTE - 50) 
         
@@ -27,13 +35,15 @@ class Speler(pygame.sprite.Sprite):
 class Spook(pygame.sprite.Sprite):
     def __init__(self, snelheid):
         super().__init__() 
+        
+        BASE_DIR = Path(__file__).resolve().parent
+        IMAGE_DIR = BASE_DIR / "images"
 
-        # STAP 1: Maak een lijstje van al je spook-afbeeldingen
-        # Let op: Zorg dat deze bestanden ook echt bestaan op je computer!
-        mogelijke_plaatjes = [
-            "/Users/arnedeboudt/Desktop/UCLL/introduction project/projectweek/projectweek-10-klapstoel/projectweek-10-klapstoel/space invaders/images/enemy-removebg-preview.png",
-            "/Users/arnedeboudt/Desktop/UCLL/introduction project/projectweek/projectweek-10-klapstoel/projectweek-10-klapstoel/space invaders/images/enemy2-removebg-preview.png",
-            "/Users/arnedeboudt/Desktop/UCLL/introduction project/projectweek/projectweek-10-klapstoel/projectweek-10-klapstoel/space invaders/images/enemy3-removebg-preview.png"
+        # Lijst met bestandsnamen
+        mogelijke_bestanden = [
+            "enemy-removebg-preview.png",
+            "enemy2-removebg-preview.png",
+            "enemy3-removebg-preview.png"
         ]
         
         gekozen_bestand = random.choice(mogelijke_bestanden)
