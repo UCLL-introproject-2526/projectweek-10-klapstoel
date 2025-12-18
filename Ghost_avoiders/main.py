@@ -2,10 +2,15 @@
 import pygame
 import sys
 import random
+from pathlib import Path
 from settings import *
 from utils import * 
-from game_objects import Speler, Spook 
-from pathlib import Path
+from game_objects import Speler, Spook
+
+def main():
+    speler = Speler()
+    spook = Spook(3)                     
+
 
 
 pygame.init()
@@ -27,7 +32,7 @@ IMAGE_PATH = BASE_DIR / "images" / "background.png"
 
 
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
-
+# Pad naar afbeelding
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 achtergrond = laad_afbeelding(
     IMAGE_PATH,
@@ -35,7 +40,6 @@ achtergrond = laad_afbeelding(
     HOOGTE,
     ZWART
 )
-
 
 def start_scherm(highscore):
     intro = True
@@ -143,6 +147,6 @@ def main():
             sla_highscore_op(highscore)
             
         game_over_scherm(score, highscore)
-
+         
 if __name__ == "__main__":
-    main()
+    main()   

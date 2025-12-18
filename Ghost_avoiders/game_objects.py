@@ -46,19 +46,11 @@ class Spook(pygame.sprite.Sprite):
             "enemy3-removebg-preview.png"
         ]
         
-<<<<<<< HEAD
         gekozen_bestand = random.choice( mogelijke_bestanden)
-        
+        FULL_PATH = IMAGE_DIR / gekozen_bestand
         # Plak het pad aan elkaar
 
-        self.image = laad_afbeelding(str(volledige_pad), 50, 50, ROOD)
-=======
-        gekozen_bestand = random.choice(mogelijke_bestanden)
-        
-        # Plak het pad aan elkaar
-
-        self.image = laad_afbeelding(str(IMAGE_DIR), 50, 50, ROOD)
->>>>>>> 53a96af427f5d42c1991aa44fadaa0783eac9e61
+        self.image = laad_afbeelding(str(FULL_PATH), 50, 50, ROOD)
 
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, BREEDTE - 50) 
