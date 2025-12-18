@@ -6,8 +6,6 @@ from settings import *
 from utils import * 
 from game_objects import Speler, Spook 
 from pathlib import Path
- 
-
 # Initialisatie
 pygame.init()
 scherm = pygame.display.set_mode((BREEDTE, HOOGTE))
@@ -21,7 +19,11 @@ font_groot = pygame.font.Font(None, 72)
 # Basis map = map waarin dit .py bestand staat
 BASE_DIR = Path(__file__).resolve().parent
 
+
 # Pad naar afbeelding (relatief!)
+IMAGE_PATH = BASE_DIR / "images" / "background.png"
+
+# Pad naar afbeelding
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 achtergrond = laad_afbeelding(
     IMAGE_PATH,

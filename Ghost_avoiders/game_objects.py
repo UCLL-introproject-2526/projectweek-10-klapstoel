@@ -6,7 +6,9 @@ from utils import laad_afbeelding # Zorg dat dit klopt
 class Speler(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
-        self.image = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/spaceship copy.png", 60, 60, (0, 0, 255))
+
+        self.image = laad_afbeelding("Ghost avoiders/images/spaceship copy.png", 50, 50, (0, 0, 255))
+
         
         # Stap 2: Waar sta ik?
         self.rect = self.image.get_rect()
