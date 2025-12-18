@@ -142,6 +142,6 @@ def main():
             sla_highscore_op(highscore)
             
         game_over_scherm(score, highscore)
-
+         
 if __name__ == "__main__":
-    main()
+    main()   
