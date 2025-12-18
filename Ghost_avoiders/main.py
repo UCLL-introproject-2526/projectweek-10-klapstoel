@@ -32,6 +32,7 @@ IMAGE_PATH = BASE_DIR / "images" / "background.png"
 
 
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
+
 # Pad naar afbeelding
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 achtergrond = laad_afbeelding(
