@@ -17,31 +17,38 @@ klok = pygame.time.Clock()
 font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
-# Basis map = map waarin dit .py bestand staat
+# Basis map = map waarin py  staat
 BASE_DIR = Path(__file__).resolve().parent
 
 
-# Pad naar afbeelding (relatief!)
+# Pad naar afbeelding (relatief)
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
 
 
 # Achtergrond laden
+<<<<<<< HEAD:Ghost avoiders/main.py
 achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
-
+=======
+=======
 # Pad naar afbeelding
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
+>>>>>>> 76c08ad1023f4b842632ff0319dd6fed69bea1b3
 achtergrond = laad_afbeelding(
     IMAGE_PATH,
     BREEDTE,
     HOOGTE,
     ZWART
 )
+<<<<<<< HEAD
+>>>>>>> 021aa063f951f04a692e29c1fb45054a9d43b34f:Ghost_avoiders/main.py
+=======
+>>>>>>> 76c08ad1023f4b842632ff0319dd6fed69bea1b3
 
 def start_scherm(highscore):
     intro = True
     while intro:
         scherm.blit(achtergrond, (0,0))
-        teken_tekst(scherm, "GHOST AVOIDER", BREEDTE//2, HOOGTE//2 - 50, font_groot, WIT, True)
+        teken_tekst(scherm, "GHOST AVOIDER", BREEDTE//2, HOOGTE//2 - 50, font_groot, ROOD, True)
         teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE//2, HOOGTE//2 + 20, font_klein, GEEL, True)
         teken_tekst(scherm, "Druk op SPATIE om te starten", BREEDTE//2, HOOGTE//2 + 80, font_klein, WIT, True)
         
@@ -82,9 +89,10 @@ def main():
     while True: # Grote loop voor herstarten spel
         start_scherm(highscore)
         
-        # --- SPEL SETUP ---
+        
         speler = Speler()
-        alle_sprites = pygame.sprite.Group() # Groep voor makkelijk tekenen
+        # groep om meerdere spoken aan te spreken anders moeten wij dit zelf doen
+        alle_sprites = pygame.sprite.Group() 
         alle_sprites.add(speler)
         
         spoken_groep = pygame.sprite.Group() # Groep voor botsingen
@@ -94,7 +102,6 @@ def main():
         spook_timer = 0
         spel_actief = True
         
-        # --- GAMEPLAY LOOP ---
         while spel_actief:
             klok.tick(FPS)
             
@@ -111,7 +118,7 @@ def main():
                 alle_sprites.add(spook)
                 spook_timer = 0
             
-            alle_sprites.update() # Beweegt speler én alle spoken automatisch!
+            alle_sprites.update() # Beweegt speler xén alle spoken automatisch!
             
             # Score checken (spoken die het scherm uit zijn)
             for spook in spoken_groep:
