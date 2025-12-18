@@ -1,57 +1,34 @@
-# main.py
 import pygame
 import sys
 import random
 from settings import *
 from utils import * 
-from game_objects import Speler, Spook 
+from game_objects import Speler, Spook
+from bullets import Bullet, Explosie  # NIEUW!
 from pathlib import Path
 
-# Initialisatie
+
 pygame.init()
 scherm = pygame.display.set_mode((BREEDTE, HOOGTE))
 pygame.display.set_caption("Ghost Avoider")
 klok = pygame.time.Clock()
 
-# Fonts
 font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
-# Basis map = map waarin py  staat
 BASE_DIR = Path(__file__).resolve().parent
-
-
-# Pad naar afbeelding (relatief)
 IMAGE_PATH = BASE_DIR / "images" / "background.png"
-
-
-# Achtergrond laden
-achtergrond = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/background.png", BREEDTE, HOOGTE, ZWART)
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> a0109eab9f31948aa07bdcb3b7c6ff46cd7338a6
-# Pad naar afbeelding
-IMAGE_PATH = BASE_DIR / "images" / "background.png"
-achtergrond = laad_afbeelding(
-    IMAGE_PATH,
-    BREEDTE,
-    HOOGTE,
-    ZWART
-)
-<<<<<<< HEAD
-=======
-
->>>>>>> a0109eab9f31948aa07bdcb3b7c6ff46cd7338a6
+achtergrond = laad_afbeelding(IMAGE_PATH, BREEDTE, HOOGTE, ZWART)
 
 def start_scherm(highscore):
+    """Het start scherm van het spel"""
     intro = True
     while intro:
         scherm.blit(achtergrond, (0,0))
-        teken_tekst(scherm, "GHOST AVOIDER", BREEDTE//2, HOOGTE//2 - 50, font_groot, ROOD, True)
+        teken_tekst(scherm, "GHOST AVOIDER", BREEDTE//2, HOOGTE//2 - 50, font_groot, WIT, True)
         teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE//2, HOOGTE//2 + 20, font_klein, GEEL, True)
-        teken_tekst(scherm, "Druk op SPATIE om te starten", BREEDTE//2, HOOGTE//2 + 80, font_klein, WIT, True)
+        teken_tekst(scherm, "Druk SPATIE om te starten", BREEDTE//2, HOOGTE//2 + 80, font_klein, WIT, True)
+        teken_tekst(scherm, "Hou SPATIE ingedrukt om te schieten!", BREEDTE//2, HOOGTE//2 + 120, font_klein, GRIJS, True)
         
         pygame.display.flip()
         
@@ -63,6 +40,7 @@ def start_scherm(highscore):
                     intro = False
 
 def game_over_scherm(score, highscore):
+    """Het game over scherm"""
     while True:
         scherm.blit(achtergrond, (0,0))
         teken_tekst(scherm, "GAME OVER", BREEDTE//2, HOOGTE//2 - 50, font_groot, ROOD, True)
@@ -80,76 +58,96 @@ def game_over_scherm(score, highscore):
                 pygame.quit(); sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    return # Terug naar de main loop
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit(); sys.exit()
+                    return
 
 def main():
     highscore = laad_highscore()
     
-    while True: # Grote loop voor herstarten spel
+    while True:
         start_scherm(highscore)
         
-        
         speler = Speler()
-        # groep om meerdere spoken aan te spreken anders moeten wij dit zelf doen
-        alle_sprites = pygame.sprite.Group() 
+        alle_sprites = pygame.sprite.Group()
         alle_sprites.add(speler)
         
-        spoken_groep = pygame.sprite.Group() # Groep voor botsingen
-        
+        spoken_groep = pygame.sprite.Group()
+        bullets_groep = pygame.sprite.Group()  
+        explosies_groep = pygame.sprite.Group()  
         score = 0
         huidige_spook_snelheid = BASIS_SPOOK_SNELHEID
         spook_timer = 0
         spel_actief = True
         
+     
         while spel_actief:
             klok.tick(FPS)
             
-            # 1. Events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit(); sys.exit()
             
-            # 2. Update Logica
+            toetsen = pygame.key.get_pressed()
+            if toetsen[pygame.K_SPACE]:  
+                if speler.kan_schieten():  
+                   
+                    bullet = Bullet(speler.rect.centerx, speler.rect.top)
+                    bullets_groep.add(bullet)
+                    alle_sprites.add(bullet)
+                    speler.reset_cooldown()  
+          
             spook_timer += 1
             if spook_timer >= max(20, SPOOK_INTERVAL - (score // 2)):
-                spook = Spook(BASIS_SPOOK_SNELHEID)
+                spook = Spook(huidige_spook_snelheid)
                 spoken_groep.add(spook)
                 alle_sprites.add(spook)
                 spook_timer = 0
             
-            alle_sprites.update() # Beweegt speler xén alle spoken automatisch!
+
+            alle_sprites.update()
+            explosies_groep.update()
             
-            # Score checken (spoken die het scherm uit zijn)
+            for bullet in bullets_groep:
+                geraakt = pygame.sprite.spritecollide(bullet, spoken_groep, True)
+                if geraakt:  
+                    explosie = Explosie(bullet.rect.centerx, bullet.rect.centery)
+                    explosies_groep.add(explosie)
+                    alle_sprites.add(explosie)
+                    
+                    
+                    bullet.kill()
+                    
+                    
+                    score += 5
+            
+           
             for spook in spoken_groep:
                 if spook.rect.top > HOOGTE: 
                     score += 1
-                    spook.kill() # Verwijder spook uit geheugen
+                    spook.kill()
                     
-                    # Snelheid verhogen
+                
                     if score % 10 == 0:
                         huidige_spook_snelheid += 0.5
 
-            # Botsingen
-            if pygame.sprite.spritecollide(speler, spoken_groep, False):
-                spel_actief = False # Dood
             
-            # 3. Tekenen
+            if pygame.sprite.spritecollide(speler, spoken_groep, False):
+                spel_actief = False  
+            
+            
             scherm.blit(achtergrond, (0, 0))
-            alle_sprites.draw(scherm) # Tekent alles in 1 keer!
+            alle_sprites.draw(scherm) 
+            
             
             teken_tekst(scherm, f"Score: {score}", 10, 10, font_klein)
             teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE-200, 10, font_klein, GEEL)
             
             pygame.display.flip()
             
-        # --- EINDE SPEL ---
         if score > highscore:
             highscore = score
             sla_highscore_op(highscore)
             
         game_over_scherm(score, highscore)
-         
+
 if __name__ == "__main__":
-    main()   
+    main()
