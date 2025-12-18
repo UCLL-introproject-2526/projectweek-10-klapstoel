@@ -6,7 +6,7 @@ from utils import laad_afbeelding # Zorg dat dit klopt
 class Speler(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
-        self.image = laad_afbeelding("/Users/Ibrah/projectweek-10-klapstoel/Ghost avoiders/images/spaceship copy.png", 60, 60, (0, 0, 255))
+        self.image = laad_afbeelding("/Users/projectweek-10-klapstoel/Ghost avoiders/images/spaceship copy.png", 60, 60, (0, 0, 255))
         
         # Stap 2: Waar sta ik?
         self.rect = self.image.get_rect()
@@ -28,9 +28,9 @@ class Spook(pygame.sprite.Sprite):
         # STAP 1: Maak een lijstje van al je spook-afbeeldingen
         # Let op: Zorg dat deze bestanden ook echt bestaan op je computer!
         mogelijke_plaatjes = [
-            "/Users/Ibrah/projectweek-10-klapstoel/Ghost avoiders/images/enemy-removebg-preview.png",
-            "/Users/Ibrah/projectweek-10-klapstoel/Ghost avoiders/images/enemy2-removebg-preview.png",
-            "/Users/Ibrah/projectweek-10-klapstoel/Ghost avoiders/images/enemy3-removebg-preview.png"
+            "/Users/projectweek-10-klapstoel/Ghost avoiders/images/enemy-removebg-preview.png",
+            "/Users/projectweek-10-klapstoel/Ghost avoiders/images/enemy2-removebg-preview.png",
+            "/Users/projectweek-10-klapstoel/Ghost avoiders/images/enemy3-removebg-preview.png"
         ]
         
         # STAP 2: Kies willekeurig één plaatje uit de lijst
