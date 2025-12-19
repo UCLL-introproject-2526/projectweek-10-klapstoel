@@ -5,6 +5,7 @@ from pathlib import Path
 from settings import *
 from utils import * 
 from game_objects import Speler, Spook
+from sounds_manager import SoundManager
 
 def main():
     speler = Speler()
