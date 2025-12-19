@@ -9,15 +9,11 @@ from sounds_manager import SoundManager
 
 def main():
     speler = Speler()
-    spook = Spook(3)                     
-
-
-
+    spook = Spook()                     
 pygame.init()
 scherm = pygame.display.set_mode((BREEDTE, HOOGTE))
 pygame.display.set_caption("Ghost Avoider")
 klok = pygame.time.Clock()
-
 geluid = SoundManager()
 
 font_klein = pygame.font.Font(None, 36)
@@ -134,7 +130,7 @@ def main():
             teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE-200, 10, font_klein, GEEL)
             pygame.display.flip()
             
-        # Na de game loop: highscore opslaan en game over scherm tonen
+        # highscore opslaan en game over scherm tonen
         if score > highscore:
             highscore = score
             sla_highscore_op(highscore)
