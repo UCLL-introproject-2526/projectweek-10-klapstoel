@@ -18,7 +18,7 @@ geluid = SoundManager()
 font_klein = pygame.font.Font(None, 36)
 font_groot = pygame.font.Font(None, 72)
 
-# --- AFBEELDINGEN LADEN ---
+# afbeelding laden
 BASE_DIR = Path(__file__).resolve().parent
 IMAGE_DIR = BASE_DIR / "images"
 
@@ -38,7 +38,7 @@ def start_scherm(highscore):
         
         # De titel staat al op de poster, dus we tonen alleen de highscore en instructie
         # Deze plaatsen we onderaan zodat ze de poster niet blokkeren
-        teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE//2, HOOGTE - 100, font_klein, FELGEEL, True)
+        teken_tekst(scherm, f"Highscore: {highscore}", BREEDTE//2, HOOGTE - 100, font_klein, FELGEEL    , True)
         teken_tekst(scherm, "Druk op SPATIE om te starten", BREEDTE//2, HOOGTE - 50, font_klein, ROOD, True)
         
         pygame.display.flip()
