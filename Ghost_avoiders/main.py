@@ -8,8 +8,9 @@ from utils import *
 from game_objects import Speler, Spook
 
 def main():
-    speler = Speler()
-    spook = Spook(3)                     
+    Speler = Speler()
+    
+    Spook = Spook(3)                     
 
 
 
