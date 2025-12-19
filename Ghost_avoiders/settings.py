@@ -13,6 +13,7 @@ BLAUW = (0, 100, 255)
 GROEN = (0, 255, 0)
 GRIJS = (200, 200, 200)
 GEEL = (255, 215, 0)
+FELGEEL=(255, 140, 0)
 
 # Spelinstellingen
 SPELER_SNELHEID = 7
