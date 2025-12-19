@@ -23,7 +23,7 @@ class Speler(pygame.sprite.Sprite):
         if toetsen[pygame.K_RIGHT] and self.rect.right < BREEDTE:
             self.rect.x += SPELER_SNELHEID
 
-# --- HET SPOOK ---
+#  HET SPOOK 
 class Spook(pygame.sprite.Sprite):
     def __init__(self, snelheid):
         super().__init__() 

@@ -33,7 +33,7 @@ class SoundManager:
         """Start de achtergrondmuziek als die nog niet speelt."""
 
         if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.play(-1) # -1 = oneindig herhalen
+            pygame.mixer.music.play(-1) 
 
     def stop_muziek(self):
         """Stopt de muziek direct."""
