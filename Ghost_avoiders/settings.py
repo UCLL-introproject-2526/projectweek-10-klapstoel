@@ -1,8 +1,8 @@
 # settings.py
 
 # Scherm
-BREEDTE = 800
-HOOGTE = 600
+BREEDTE = 1600
+HOOGTE = 920
 FPS = 60
 
 # Kleuren
